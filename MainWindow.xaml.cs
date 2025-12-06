@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,9 +22,22 @@ namespace eliza13pr
     /// </summary>
     public partial class MainWindow : Window
     {
+       
+        public static string LocalPath = Directory.GetCurrentDirectory();
         public MainWindow()
         {
             InitializeComponent();
+            OpenPages(pages.main);
+            LocalPath= System.IO.Directory.GetCurrentDirectory();
+        }
+        public enum pages
+        {
+            main
+        }
+        public void OpenPages(pages _)
+        {
+            if (_pages == pages.main)
+                frame.Navigate(new Layouts.Main(this));
         }
     }
 }
