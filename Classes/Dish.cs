@@ -14,12 +14,16 @@ namespace eliza13pr.Classes
         public string img;
         public List<Ingredient> ingredients = new List<Ingredient> { };
         public int activeSize = 0;
+        public string description;
         public class Sizes
         {
             public int id;
             public int id_size;
             public int price;
+            public int size;
             public int wes;
+            public int countOrder;
+            public bool orders;
         }
         public class Ingredient
         {

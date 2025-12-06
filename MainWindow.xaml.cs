@@ -22,22 +22,23 @@ namespace eliza13pr
     /// </summary>
     public partial class MainWindow : Window
     {
-       
-        public static string LocalPath = Directory.GetCurrentDirectory();
+        public string localPath;
+        //public static string localPath = Directory.GetCurrentDirectory();
         public MainWindow()
         {
             InitializeComponent();
+            localPath = System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetCurrentDirectory()).FullName).FullName;
             OpenPages(pages.main);
-            LocalPath= System.IO.Directory.GetCurrentDirectory();
+           
         }
         public enum pages
         {
             main
         }
-        public void OpenPages(pages _)
+        public void OpenPages(pages _pages)
         {
             if (_pages == pages.main)
-                frame.Navigate(new Layouts.Main(this));
+                frame.Navigate(new Layout.Main(this));
         }
     }
 }

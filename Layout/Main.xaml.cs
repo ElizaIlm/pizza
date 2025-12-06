@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using eliza13pr.Classes;
+using System.IO;
 
 namespace eliza13pr.Layout
 {
@@ -21,27 +22,73 @@ namespace eliza13pr.Layout
     /// </summary>
     public partial class Main : Page
     {
-        public List <Classes.Dish> AllDishes = new List <Classes.Dish> ();
-        public Main()   
+
+        public MainWindow mainWindow;
+
+        public List<Dish> dishs = new List<Dish>();
+
+        public Main(MainWindow _mainWindow) 
         {
             InitializeComponent();
+            mainWindow = _mainWindow;
+
+            Dish newDish = new Dish();
+            newDish.img = "img-1";
+            newDish.name = "Сливочная";
+            newDish.description = "Пицца - итальянское национальное блюдо в виде круглой открытой дрожжевой лепёшки";
+
+            Dish.Ingredient newIngredient = new Dish.Ingredient();
+            newIngredient.name = "соус «Кунжутный»";
+            newDish.ingredients.Add(newIngredient);
+
+            newIngredient = new Dish.Ingredient();
+            newIngredient.name = "сыр «Моцарелла»";
+            newDish.ingredients.Add(newIngredient);
+
+            newIngredient = new Dish.Ingredient();
+            newIngredient.name = "сыр «Моцарелла» мягкий";
+            newDish.ingredients.Add(newIngredient);
+
+            newIngredient = new Dish.Ingredient();
+            newIngredient.name = "помидоры";
+            newDish.ingredients.Add(newIngredient);
+
+            Dish.Sizes newSize = new Dish.Sizes();
+            newSize.size = 23;
+            newSize.price = 380;
+            newSize.wes = 530;
+            newDish.sizes.Add(newSize);
+
+            newSize = new Dish.Sizes();
+            newSize.size = 30;
+            newSize.price = 760;
+            newSize.wes = 560;
+            newDish.sizes.Add(newSize);
+
+            newSize = new Dish.Sizes();
+            newSize.size = 40;
+            newSize.price = 1210;
+            newSize.wes = 730;
+            newDish.sizes.Add(newSize);
+
+            dishs.Add(newDish);
+            CreatePizza();
         }
         public void CreatePizza()
         {
             for (int i = 0; i < dishs.Count; i++) // перебираем пиццы
             {
                 var bc = new BrushConverter(); // создаём конвертор цвета
-
                 Grid global = new Grid(); // создаём элемент Grid
                 global.Height = 100; // указываем высоту
                 global.Background = (Brush)bc.ConvertFrom("#FFECECEC"); // указываем цвет
                 if (i > 0) global.Margin = new Thickness(0, 10, 0, 0); // задаём отступы
 
-                Image logo = new Image(); // создаём изображение
-                if (File.Exists(mainWindow.localPath + @"\image\dish\" + dishs[i].img + ".png")) // проверяем существует ли файл
-                    logo.Source = new BitmapImage(new Uri(mainWindow.localPath + @"\image\dish\" + dishs[i].img + ".png")); // указываем
+                Image logo = new Image(); // создаём изображение;
+                if (File.Exists(mainWindow.localPath + @"\Layout\image\dish\" + dishs[i].img + ".png")) 
+                    logo.Source = new BitmapImage(new Uri(mainWindow.localPath + @"\Layout\image\dish\" + dishs[i].img + ".png")); 
                 else
-                    logo.Source = new BitmapImage(new Uri(mainWindow.localPath + @"\image\icon.png")); // указываем картинку
+                    logo.Source = new BitmapImage(new Uri(mainWindow.localPath + @"\Layout\image\icon.png"));
 
                 logo.HorizontalAlignment = System.Windows.HorizontalAlignment.Left; // задаём привязку по горизонтали
                 logo.Height = 50; // устанавливаем высоту
@@ -62,29 +109,39 @@ namespace eliza13pr.Layout
                 description.Content = dishs[i].description; // устанавливаем описание
                 description.HorizontalAlignment = System.Windows.HorizontalAlignment.Left; // устанавливаем привязку по горизонтали
                 description.VerticalAlignment = System.Windows.VerticalAlignment.Top; // устанавливаем привязку по вертикали
-                description.Margin = new Thickness(65, 20, 0, 0);  // устанавливаем отступы
+                description.Margin = new Thickness(65, 20, 0, 0); // устанавливаем отступы
                 global.Children.Add(description); // добавляем в элемент Grid
-                if (dishs[i].ingredients.Count != 0) // если ингредиенты блюда существуют
+
+                if (dishs[i].ingredients.Count != 0) // если ингридиенты блюда существуют
                 {
                     Label ingredient = new Label(); // создаём текст
-                    string str_ingredient = ""; // собираем ингредиенты
-                    for (int j = 0; j < dishs[i].ingredients.Count; j++) // перебираем ингредиенты
+                    string str_ingredient = ""; // собираем ингридиенты
+                    for (int j = 0; j < dishs[i].ingredients.Count; j++) // перебираем ингридиенты
                     {
-                        str_ingredient += dishs[i].ingredients[j].name; // запоминаем наименование ингред
-                        if (j != dishs[i].ingredients.Count - 1) // если это не последнее ингредиент
+                        str_ingredient += dishs[i].ingredients[j].name; // запоминаем наименование ингридиента
+                        if (j != dishs[i].ingredients.Count - 1) // если это не последние ингредиент
                         {
                             str_ingredient += ", "; // ставим запятую
                         }
                     }
 
-                    ingredient.Content = "Состав: " + str_ingredient; // устанавливаем описание ингредиентов
                     ingredient.HorizontalAlignment = System.Windows.HorizontalAlignment.Left; // устанавливаем привязку по горизонтали
                     ingredient.VerticalAlignment = System.Windows.VerticalAlignment.Top; // устанавливаем привязку по вертикали
+                    ingredient.Content = "Состав: " + str_ingredient; // устанавливаем описание ингридиентов
                     ingredient.Margin = new Thickness(65, 40, 0, 0); // устанавливаем отступы
-                    global.Children.Add(ingredient); // добавляем в элемент Grid
+                    global.Children.Add(ingredient); // добавляем в элемент // добавляем в элемент Grid
                 }
+
+
+
+
+
+
+
+
+
                 Label price = new Label(); // создаём текст
-                price.Content = "Цена: " + dishes[i].sizes[0].price + " р."; // устанавливаем текст
+                price.Content = "Цена: " + dishs[i].sizes[0].price + " p."; // устанавливаем текст
                 price.HorizontalAlignment = System.Windows.HorizontalAlignment.Left; // устанавливаем привязку по горизонтали
                 price.VerticalAlignment = System.Windows.VerticalAlignment.Bottom; // устанавливаем привязку по вертикали
                 price.Margin = new Thickness(65, 0, 0, 10); // устанавливаем отступы
@@ -95,7 +152,7 @@ namespace eliza13pr.Layout
                 wes.HorizontalAlignment = System.Windows.HorizontalAlignment.Left; // устанавливаем привязку по горизонтали
                 wes.VerticalAlignment = System.Windows.VerticalAlignment.Bottom; // устанавливаем привязку по вертикали
                 wes.Margin = new Thickness(236, 0, 0, 10); // устанавливаем отступы
-                global.Children.Add(wes); 
+                global.Children.Add(wes); // добавляем в элемент Grid
 
                 Button button1 = new Button(); // создаём кнопку
                 Button button2 = new Button(); // создаём кнопку
@@ -113,49 +170,73 @@ namespace eliza13pr.Layout
                 button1.Margin = new Thickness(0, 10, 110, 0); // устанавливаем отступы
                 button1.Width = 45; // устанавливаем ширину
                 button1.Background = Brushes.White; // устанавливаем цвет
-                button1.Foreground = (Brush)bc.ConvertFrom("#FFDD3333"); // устанавливаем цвет текста
-                button1.Tag = i; // запоминаем id элемента в теге
-                button1.Click += delegate
+                button1.Foreground = (Brush)bc.ConvertFrom("#FFDD3333"); //станавливаем цвет текста
+                button1.Tag = i; // запоминаем id элемента в тег
+                button1.Click += delegate // назначаем действие
                 {
                     price.Content = "Цена: " + dishs[int.Parse(button1.Tag.ToString())].sizes[0].price + " р."; // обновляем цену
-                    wes.Content = "Вес: " + dishs[int.Parse(button1.Tag.ToString())].sizes[0].wes + " г."; // обновляем вес
+                    wes.Content = "Bec: " + dishs[int.Parse(button1.Tag.ToString())].sizes[0].wes + " r."; // обновляем вес
                     button1.Background = Brushes.White; // изменяем цвет
                     button1.Foreground = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет текста
 
                     button2.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
                     button2.Foreground = Brushes.White; // изменяем цвет текста
-                    button3.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
+                    button3.Background = (Brush)bc.ConvertFrom("#FF0D3333"); // изменяем цвет
                     button3.Foreground = Brushes.White; // изменяем цвет текста
 
                     dishs[int.Parse(button1.Tag.ToString())].activeSize = 0; // запоминаем активный размер
                     count.Text = dishs[int.Parse(button1.Tag.ToString())].sizes[0].countOrder.ToString(); // изменяем стоимость блюда
                     order.IsChecked = dishs[int.Parse(button1.Tag.ToString())].sizes[0].orders; // Снимаем галочку выбора блюда
                 };
-                global.Children.Add(button2);
-                button3.Content = dishs[i].sizes[2].size + " см."; // устанавливаем текст
-                button3.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-                button3.VerticalAlignment = System.Windows.VerticalAlignment.Top;
-                button3.Margin = new Thickness(0, 10, 10, 0);
-                button3.Width = 45;
-                button3.Tag = i; // запоминаем id элемента в тег
-                button3.Click += delegate
+                button2.Content = dishs[i].sizes[1].size + " см."; // устанавливаем текст
+                button2.HorizontalAlignment = System.Windows.HorizontalAlignment.Right; // устанавливаем привязку по горизонтали
+                button2.VerticalAlignment = System.Windows.VerticalAlignment.Top; // устанавливаем привязку по вертикали
+                button2.Margin = new Thickness(0, 10, 60, 0); // устанавливаем отступы
+                button2.Width = 45; // устанавливаем ширину
+                button2.Tag = i; // запоминаем id элемента в тег
+                button2.Click += delegate // назначаем действие
                 {
-                        price.Content = "Цена: " + dishs[int.Parse(button2.Tag.ToString())].sizes[2].price + " р."; // обновляем цену
-                        wes.Content = "Вес: " + dishes[int.Parse(button2.Tag.ToString())].sizes[2].wes + " г."; // обновляем вес
-                        button3.Background = Brushes.White; // изменяем цвет
-                        button3.Foreground = (Brush)bc.ConvertFrom("#FFD03333"); // изменяем цвет текста
+                    price.Content = "Цена: " + dishs[int.Parse(button2.Tag.ToString())].sizes[1].price + " р."; // обновляем цену
+                    wes.Content = "Вeс: " + dishs[int.Parse(button2.Tag.ToString())].sizes[1].wes + " г."; // обновляем вес
+                    button2.Background = Brushes.White; // изменяем цвет
+                    button2.Foreground = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет текста
 
-                        button1.Background = (Brush)bc.ConvertFrom("#FFD03333"); // изменяем цвет
-                        button1.Foreground = Brushes.White; // изменяем цвет текста
-                        button2.Background = (Brush)bc.ConvertFrom("#FFD03333"); // изменяем цвет
-                        button2.Foreground = Brushes.White; // изменяем цвет текста
+                    button1.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
+                    button1.Foreground = Brushes.White; // изменяем цвет текста
+                    button3.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
+                    button3.Foreground = Brushes.White; // изменяем цвет текста
 
-                        dishs[int.Parse(button1.Tag.ToString())].activeSize = 2; // запоминаем активный размер
-                        count.Text = dishs[int.Parse(button1.Tag.ToString())].sizes[2].countOrder.ToString(); // изменяем стоимость блюда
-                        order.IsChecked = dishs[int.Parse(button1.Tag.ToString())].sizes[2].orders; // Снимаем галочку выбора блюда
-                    
+                    dishs[int.Parse(button1.Tag.ToString())].activeSize = 1; // запоминаем активный размер
+                    count.Text = dishs[int.Parse(button1.Tag.ToString())].sizes[1].countOrder.ToString(); // изменяем стоимость блюда
+                    order.IsChecked = dishs[int.Parse(button1.Tag.ToString())].sizes[1].orders; // Снимаем галочку выбора блюда
                 };
-                global.Children.Add(button3);
+                global.Children.Add(button2); // добавляем в элемент Grid
+
+                button3.Content = dishs[i].sizes[2].size + " см."; // устанавливаем текст
+                button3.HorizontalAlignment = System.Windows.HorizontalAlignment.Right; // устанавливаем привязку по горизонтали
+                button3.VerticalAlignment = System.Windows.VerticalAlignment.Top; // устанавливаем привязку по вертикали
+                button3.Margin = new Thickness(0, 10, 10, 0); // устанавливаем отступы
+                button3.Width = 45; // устанавливаем ширину
+                button3.Tag = i; // запоминаем id элемента в тег
+                button3.Click += delegate // назначаем действие
+                {
+                    price.Content = "Цена: " + dishs[int.Parse(button2.Tag.ToString())].sizes[2].price + " p."; // обновляем цену
+                    wes.Content = "Вeс: " + dishs[int.Parse(button2.Tag.ToString())].sizes[2].wes + " г."; // обновляем вес
+                    button3.Background = Brushes.White; // изменяем цвет
+                    button3.Foreground = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет текста
+
+                    button1.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
+                    button1.Foreground = Brushes.White; // изменяем цвет текста
+                    button2.Background = (Brush)bc.ConvertFrom("#FFDD3333"); // изменяем цвет
+                    button2.Foreground = Brushes.White; // изменяем цвет текста
+
+                    dishs[int.Parse(button1.Tag.ToString())].activeSize = 2; // запоминаем активный размер
+                    count.Text = dishs[int.Parse(button1.Tag.ToString())].sizes[2].countOrder.ToString(); // изменяем стоимость блюда
+                    order.IsChecked = dishs[int.Parse(button1.Tag.ToString())].sizes[2].orders; // Снимаем галочку выбора блюда
+                };
+                global.Children.Add(button3); // добавляем в элемент Grid
+
+
 
                 minus.Content = "-"; // устанавливаем текст
                 minus.HorizontalAlignment = System.Windows.HorizontalAlignment.Right; // устанавливаем привязку по горизонтали
@@ -165,14 +246,14 @@ namespace eliza13pr.Layout
                 minus.Tag = i; // запоминаем id элемента в тег
                 minus.Click += delegate // назначаем действие
                 {
-                    if (count.Text != "") // если текст не равен пустоте
+                    if (count.Text != "") // если текст нe pавен пустоте
                     {
                         if (int.Parse(count.Text) > 0) // если кол-во заказанных пиц больше 0
                         {
                             count.Text = (int.Parse(count.Text) - 1).ToString(); // вычитаем
 
-                            int id = int.Parse(minus.Tag.ToString()); // Преобразуем ID
-                            dishs[id].sizes[dishs[id].activeSize].countOrder = int.Parse(count.Text); // уменьшаем количество
+                            int id = int.Parse(minus.Tag.ToString()); // Преоразовываем ID
+                            dishs[id].sizes[dishs[id].activeSize].countOrder = int.Parse(count.Text); // уменьшаем кол-во заказанных блюд
                         }
                     }
                 };
@@ -201,9 +282,9 @@ namespace eliza13pr.Layout
                     {
                         if (int.Parse(count.Text) < 15) // если кол-во заказанных пиц меньше 15
                         {
-                            count.Text = (int.Parse(count.Text) + 1).ToString(); // прибавляем
+                            count.Text = (int.Parse(count.Text) + 1).ToString(); // прибовляем
 
-                            int id = int.Parse(plus.Tag.ToString()); // Преобразуем ID
+                            int id = int.Parse(plus.Tag.ToString()); // Преоразовываем ID
                             dishs[id].sizes[dishs[id].activeSize].countOrder = int.Parse(count.Text); // уменьшаем кол-во заказанных блюд
                         }
                     }
@@ -217,7 +298,7 @@ namespace eliza13pr.Layout
                 order.Tag = i; // запоминаем id элемента в тег
                 order.Click += delegate // назначаем действие
                 {
-                    int id = int.Parse(order.Tag.ToString()); // Преобразуем ID
+                    int id = int.Parse(order.Tag.ToString()); // Преоразовываем ID
                     dishs[id].sizes[dishs[id].activeSize].orders = (bool)order.IsChecked; // уменьшаем кол-во заказанных блюд
                 };
                 global.Children.Add(order); // добавляем в элемент Grid
@@ -227,3 +308,5 @@ namespace eliza13pr.Layout
         }
     }
 }
+    
+
